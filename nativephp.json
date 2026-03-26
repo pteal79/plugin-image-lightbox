@@ -1,0 +1,44 @@
+{
+    "namespace": "ImageLightbox",
+
+    "bridge_functions": [
+        {
+            "name": "ImageLightbox.Show",
+            "android": "com.nativephp.plugins.imagelightbox.ImageLightboxFunctions.Show",
+            "ios": "ImageLightboxFunctions.Show",
+            "description": "Display an image in a full-screen native lightbox overlay"
+        }
+    ],
+
+    "android": {
+        "permissions": [
+            "android.permission.INTERNET"
+        ],
+        "dependencies": {
+            "implementation": []
+        },
+        "activities": [],
+        "services": [],
+        "receivers": [],
+        "providers": []
+    },
+
+    "ios": {
+        "info_plist": {},
+        "dependencies": {
+            "swift_packages": [],
+            "pods": []
+        }
+    },
+
+    "events": [
+        "Nativephp\\ImageLightbox\\Events\\EditPressed",
+        "Nativephp\\ImageLightbox\\Events\\MarkupPressed",
+        "Nativephp\\ImageLightbox\\Events\\DeletePressed",
+        "Nativephp\\ImageLightbox\\Events\\ClosePressed"
+    ],
+
+    "hooks": {
+        "copy_assets": "nativephp:image-lightbox:copy-assets"
+    }
+}
