@@ -17,7 +17,7 @@ Use the `ImageLightbox` facade:
 
 @verbatim
 <code-snippet name="Show a lightbox" lang="php">
-use Nativephp\ImageLightbox\Facades\ImageLightbox;
+use Pteal79\ImageLightbox\Facades\ImageLightbox;
 
 ImageLightbox::show([
     'image'   => 'https://example.com/photo.heic',
@@ -44,8 +44,8 @@ ImageLightbox::show([
 @verbatim
 <code-snippet name="Listening for ImageLightbox events" lang="php">
 use Native\Mobile\Attributes\OnNative;
-use Nativephp\ImageLightbox\Events\EditPressed;
-use Nativephp\ImageLightbox\Events\MarkupPressed;
+use Pteal79\ImageLightbox\Events\EditPressed;
+use Pteal79\ImageLightbox\Events\MarkupPressed;
 
 #[OnNative(EditPressed::class)]
 public function handleEditPressed(?string $imageId = null): void

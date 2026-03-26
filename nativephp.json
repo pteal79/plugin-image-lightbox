@@ -32,10 +32,10 @@
     },
 
     "events": [
-        "Nativephp\\ImageLightbox\\Events\\EditPressed",
-        "Nativephp\\ImageLightbox\\Events\\MarkupPressed",
-        "Nativephp\\ImageLightbox\\Events\\DeletePressed",
-        "Nativephp\\ImageLightbox\\Events\\ClosePressed"
+        "Pteal79\\ImageLightbox\\Events\\EditPressed",
+        "Pteal79\\ImageLightbox\\Events\\MarkupPressed",
+        "Pteal79\\ImageLightbox\\Events\\DeletePressed",
+        "Pteal79\\ImageLightbox\\Events\\ClosePressed"
     ],
 
     "hooks": {

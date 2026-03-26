@@ -122,7 +122,7 @@ Fired when the user taps the **close (✕)** button.
 
 ```php
 use Native\Mobile\Attributes\OnNative;
-use Nativephp\ImageLightbox\Events\ClosePressed;
+use Pteal79\ImageLightbox\Events\ClosePressed;
 
 #[OnNative(ClosePressed::class)]
 public function handleClose(?string $imageId = null): void
@@ -137,7 +137,7 @@ Fired when the user taps the **Edit** button (only available when `edit: true`).
 
 ```php
 use Native\Mobile\Attributes\OnNative;
-use Nativephp\ImageLightbox\Events\EditPressed;
+use Pteal79\ImageLightbox\Events\EditPressed;
 
 #[OnNative(EditPressed::class)]
 public function handleEdit(?string $imageId = null): void
@@ -152,7 +152,7 @@ Fired when the user taps the **Markup** button (only available when `markup: tru
 
 ```php
 use Native\Mobile\Attributes\OnNative;
-use Nativephp\ImageLightbox\Events\MarkupPressed;
+use Pteal79\ImageLightbox\Events\MarkupPressed;
 
 #[OnNative(MarkupPressed::class)]
 public function handleMarkup(?string $imageId = null): void
@@ -167,7 +167,7 @@ Fired when the user taps the **Delete** button (only available when `delete: tru
 
 ```php
 use Native\Mobile\Attributes\OnNative;
-use Nativephp\ImageLightbox\Events\DeletePressed;
+use Pteal79\ImageLightbox\Events\DeletePressed;
 
 #[OnNative(DeletePressed::class)]
 public function handleDelete(?string $imageId = null): void
@@ -217,10 +217,10 @@ off(Events.ClosePressed, onClose);
 Available event constants:
 
 ```javascript
-Events.EditPressed   // 'Nativephp\\ImageLightbox\\Events\\EditPressed'
-Events.MarkupPressed // 'Nativephp\\ImageLightbox\\Events\\MarkupPressed'
-Events.DeletePressed // 'Nativephp\\ImageLightbox\\Events\\DeletePressed'
-Events.ClosePressed  // 'Nativephp\\ImageLightbox\\Events\\ClosePressed'
+Events.EditPressed   // 'Pteal79\\ImageLightbox\\Events\\EditPressed'
+Events.MarkupPressed // 'Pteal79\\ImageLightbox\\Events\\MarkupPressed'
+Events.DeletePressed // 'Pteal79\\ImageLightbox\\Events\\DeletePressed'
+Events.ClosePressed  // 'Pteal79\\ImageLightbox\\Events\\ClosePressed'
 ```
 
 ---

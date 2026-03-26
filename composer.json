@@ -18,13 +18,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Nativephp\\ImageLightbox\\": "src/"
+            "Pteal79\\ImageLightbox\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Nativephp\\ImageLightbox\\ImageLightboxServiceProvider"
+                "Pteal79\\ImageLightbox\\ImageLightboxServiceProvider"
             ]
         },
         "nativephp": {

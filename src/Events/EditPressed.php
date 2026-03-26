@@ -1,6 +1,6 @@
 <?php
 
-namespace Nativephp\ImageLightbox\Events;
+namespace Pteal79\ImageLightbox\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nativephp\ImageLightbox;
+namespace Pteal79\ImageLightbox;
 
 class ImageLightbox
 {

@@ -1,18 +1,18 @@
 <?php
 
-namespace Nativephp\ImageLightbox\Facades;
+namespace Pteal79\ImageLightbox\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static void show(array $options)
  *
- * @see \Nativephp\ImageLightbox\ImageLightbox
+ * @see \Pteal79\ImageLightbox\ImageLightbox
  */
 class ImageLightbox extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Nativephp\ImageLightbox\ImageLightbox::class;
+        return \Pteal79\ImageLightbox\ImageLightbox::class;
     }
 }

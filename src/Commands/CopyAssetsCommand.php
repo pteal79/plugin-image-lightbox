@@ -1,6 +1,6 @@
 <?php
 
-namespace Nativephp\ImageLightbox\Commands;
+namespace Pteal79\ImageLightbox\Commands;
 
 use Native\Mobile\Plugins\Commands\NativePluginHookCommand;
 

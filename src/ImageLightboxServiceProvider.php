@@ -1,9 +1,9 @@
 <?php
 
-namespace Nativephp\ImageLightbox;
+namespace Pteal79\ImageLightbox;
 
 use Illuminate\Support\ServiceProvider;
-use Nativephp\ImageLightbox\Commands\CopyAssetsCommand;
+use Pteal79\ImageLightbox\Commands\CopyAssetsCommand;
 
 class ImageLightboxServiceProvider extends ServiceProvider
 {
