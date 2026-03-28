@@ -296,7 +296,7 @@ class ImageLightboxViewController: UIViewController {
     private func showError(_ message: String) {
         let alert = UIAlertController(
             title: "Image Not Found",
-            message: "The image could not be loaded.",
+            message: message,
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in

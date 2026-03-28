@@ -446,7 +446,7 @@ class ImageLightboxFragment : DialogFragment() {
         if (!isAdded) return
         android.app.AlertDialog.Builder(requireContext())
             .setTitle("Image Not Found")
-            .setMessage("The image could not be loaded.")
+            .setMessage(message)
             .setPositiveButton("OK") { _, _ -> dismiss() }
             .setCancelable(false)
             .show()
