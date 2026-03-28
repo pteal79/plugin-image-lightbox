@@ -215,8 +215,7 @@ class ImageLightboxViewController: UIViewController {
 
     /// Load a remote URL, injecting WebView session cookies for authenticated endpoints.
     private func loadRemoteImage(urlString: String) {
-        let normalizedUrl = urlString.hasPrefix("php://") ? "http://" + urlString.dropFirst("php://".count) : urlString
-        guard let url = URL(string: normalizedUrl) else {
+        guard let url = URL(string: urlString) else {
             showError("Invalid image URL:\n\(urlString)")
             return
         }
@@ -340,8 +339,7 @@ class ImageLightboxViewController: UIViewController {
             presentShareSheet(items: [fileURL])
         } else if let image = imageView.image {
             presentShareSheet(items: [image])
-        } else if let urlString = remoteURL,
-                  let url = URL(string: urlString.hasPrefix("php://") ? "http://" + urlString.dropFirst("php://".count) : urlString) {
+        } else if let urlString = remoteURL, let url = URL(string: urlString) {
             // Remote image not yet cached — download then share
             loadingIndicator.startAnimating()
             WebView.dataStore.httpCookieStore.getAllCookies { [weak self] cookies in

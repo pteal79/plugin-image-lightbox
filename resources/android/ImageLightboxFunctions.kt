@@ -389,7 +389,7 @@ class ImageLightboxFragment : DialogFragment() {
     }
 
     private fun loadRemote(urlString: String): Bitmap? {
-        val url = URL(urlString.replace(Regex("^php://"), "http://"))
+        val url = URL(urlString)
         val connection = (url.openConnection() as HttpURLConnection).apply {
             connectTimeout = 15_000
             readTimeout    = 30_000
