@@ -10,8 +10,7 @@ class ImageLightbox
      * Provide either `url` (remote http/https/php://) or `local` (absolute local file path),
      * but not both. At least one is required.
      *
-     * NativePHP serves the embedded PHP app over a local `php://host:port` scheme.
-     * These URLs are rewritten to `http://` before being forwarded to the native image loader.
+     * `php://` URLs (NativePHP's local server scheme) are passed through to native as-is.
      *
      * @param array{
      *     url?: string|null,
@@ -34,12 +33,6 @@ class ImageLightbox
 
         $url   = $hasUrl   ? (string) $options['url']   : null;
         $local = $hasLocal ? (string) $options['local'] : null;
-
-        // NativePHP exposes the embedded PHP server via a php:// scheme.
-        // Native HTTP clients (HttpURLConnection / URLSession) expect http://, so rewrite.
-        if ($url !== null && str_starts_with($url, 'php://')) {
-            $url = 'http://' . substr($url, strlen('php://'));
-        }
 
         $payload = [
             'url'      => $url,
