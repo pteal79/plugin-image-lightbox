@@ -217,7 +217,7 @@ class ImageLightboxViewController: UIViewController {
     private func loadRemoteImage(urlString: String) {
         let normalizedUrl = urlString.hasPrefix("php://") ? "http://" + urlString.dropFirst("php://".count) : urlString
         guard let url = URL(string: normalizedUrl) else {
-            showError("Invalid image URL.")
+            showError("Invalid image URL:\n\(urlString)")
             return
         }
 
@@ -255,7 +255,7 @@ class ImageLightboxViewController: UIViewController {
 
                     guard let data, !data.isEmpty, let image = UIImage(data: data) else {
                         print("[ImageLightbox] Decode failed — data: \(data?.count ?? 0) bytes")
-                        self.showError("Unable to decode image data.")
+                        self.showError("Unable to decode image data.\n\(url.absoluteString)")
                         return
                     }
 

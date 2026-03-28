@@ -377,12 +377,12 @@ class ImageLightboxFragment : DialogFragment() {
                 mainHandler.post {
                     progressBar.visibility = View.GONE
                     if (bitmap != null) zoomableImageView.setImageBitmap(bitmap)
-                    else showError("Unable to decode image.")
+                    else showError("Unable to decode image.\n${remoteURL ?: localPath}")
                 }
             } catch (e: Exception) {
                 mainHandler.post {
                     progressBar.visibility = View.GONE
-                    showError("Failed to load image: ${e.message}")
+                    showError("Failed to load image: ${e.message}\n${remoteURL ?: localPath}")
                 }
             }
         }
