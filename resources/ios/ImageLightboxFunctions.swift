@@ -68,7 +68,7 @@ class ImageLightboxViewController: UIViewController {
     private var scrollView: UIScrollView!
     private var imageView: UIImageView!
     private var loadingIndicator: UIActivityIndicatorView!
-    private var toolbar: UIToolbar!
+    private var buttonBar: UIView!
 
     /// Cached on-disk file URL used for the Share sheet.
     private var cachedImageFileURL: URL?
@@ -130,15 +130,12 @@ class ImageLightboxViewController: UIViewController {
         loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(loadingIndicator)
 
-        toolbar = UIToolbar()
-        toolbar.translatesAutoresizingMaskIntoConstraints = false
-        toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
-        toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
-        toolbar.isTranslucent = true
-        toolbar.tintColor = .white
-        view.addSubview(toolbar)
+        buttonBar = UIView()
+        buttonBar.translatesAutoresizingMaskIntoConstraints = false
+        buttonBar.backgroundColor = .clear
+        view.addSubview(buttonBar)
 
-        buildToolbar()
+        buildButtonBar()
         activateConstraints()
 
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap(_:)))
@@ -146,45 +143,59 @@ class ImageLightboxViewController: UIViewController {
         scrollView.addGestureRecognizer(doubleTap)
     }
 
-    private func makeIconButton(systemName: String, action: Selector) -> UIBarButtonItem {
+    private func makeIconButton(systemName: String, action: Selector) -> UIButton {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: systemName), for: .normal)
         button.tintColor = .white
         button.backgroundColor = UIColor.black.withAlphaComponent(0.55)
         button.layer.cornerRadius = 16
         button.clipsToBounds = true
-        button.frame = CGRect(x: 0, y: 0, width: 36, height: 36)
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: action, for: .touchUpInside)
-        return UIBarButtonItem(customView: button)
+        NSLayoutConstraint.activate([
+            button.widthAnchor.constraint(equalToConstant: 36),
+            button.heightAnchor.constraint(equalToConstant: 36),
+        ])
+        return button
     }
 
-    private func buildToolbar() {
-        var items: [UIBarButtonItem] = []
-        if showEdit {
-            items.append(makeIconButton(systemName: "pencil", action: #selector(editTapped)))
+    private func buildButtonBar() {
+        var leadingButtons: [UIButton] = []
+        if showEdit   { leadingButtons.append(makeIconButton(systemName: "pencil",               action: #selector(editTapped)))   }
+        if showMarkup { leadingButtons.append(makeIconButton(systemName: "pencil.tip.crop.circle", action: #selector(markupTapped))) }
+        if showShare  { leadingButtons.append(makeIconButton(systemName: "square.and.arrow.up",   action: #selector(shareTapped)))  }
+        if showDelete { leadingButtons.append(makeIconButton(systemName: "trash",                 action: #selector(deleteTapped))) }
+
+        let closeButton = makeIconButton(systemName: "xmark", action: #selector(closeTapped))
+
+        (leadingButtons + [closeButton]).forEach { buttonBar.addSubview($0) }
+
+        var constraints: [NSLayoutConstraint] = [
+            closeButton.trailingAnchor.constraint(equalTo: buttonBar.trailingAnchor, constant: -16),
+            closeButton.centerYAnchor.constraint(equalTo: buttonBar.centerYAnchor),
+        ]
+
+        var prev: UIButton? = nil
+        for btn in leadingButtons {
+            let leading: NSLayoutConstraint = prev == nil
+                ? btn.leadingAnchor.constraint(equalTo: buttonBar.leadingAnchor, constant: 16)
+                : btn.leadingAnchor.constraint(equalTo: prev!.trailingAnchor, constant: 8)
+            constraints += [leading, btn.centerYAnchor.constraint(equalTo: buttonBar.centerYAnchor)]
+            prev = btn
         }
-        if showMarkup {
-            items.append(makeIconButton(systemName: "pencil.tip.crop.circle", action: #selector(markupTapped)))
-        }
-        if showShare {
-            items.append(makeIconButton(systemName: "square.and.arrow.up", action: #selector(shareTapped)))
-        }
-        if showDelete {
-            items.append(makeIconButton(systemName: "trash", action: #selector(deleteTapped)))
-        }
-        items.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
-        items.append(makeIconButton(systemName: "xmark", action: #selector(closeTapped)))
-        toolbar.setItems(items, animated: false)
+
+        NSLayoutConstraint.activate(constraints)
     }
 
     private func activateConstraints() {
         let safe = view.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
-            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            toolbar.topAnchor.constraint(equalTo: safe.topAnchor),
+            buttonBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            buttonBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            buttonBar.topAnchor.constraint(equalTo: safe.topAnchor),
+            buttonBar.heightAnchor.constraint(equalToConstant: 52),
 
-            scrollView.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
+            scrollView.topAnchor.constraint(equalTo: buttonBar.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: safe.bottomAnchor),
@@ -367,7 +378,7 @@ class ImageLightboxViewController: UIViewController {
 
     private func presentShareSheet(items: [Any]) {
         let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        activityVC.popoverPresentationController?.sourceView = toolbar
+        activityVC.popoverPresentationController?.sourceView = buttonBar
         present(activityVC, animated: true)
     }
 
