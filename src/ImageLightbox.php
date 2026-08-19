@@ -4,6 +4,9 @@ namespace Pteal79\ImageLightbox;
 
 class ImageLightbox
 {
+    /** The gallery instance shared for the lifetime of the request. */
+    protected ?Gallery $gallery = null;
+
     /**
      * Display an image in a full-screen native lightbox overlay.
      *
@@ -47,5 +50,32 @@ class ImageLightbox
         if (function_exists('nativephp_call')) {
             nativephp_call('ImageLightbox.Show', json_encode($payload));
         }
+    }
+
+    /**
+     * Get the gallery instance, optionally seeding it with a dataset.
+     *
+     * Each row of the dataset is shaped `['index' => …, 'uuid' => …, 'file' => …, 'text' => …]`.
+     * Passing no arguments returns the existing instance untouched, so a dataset
+     * set earlier in the request can be reused:
+     *
+     *     $gallery = ImageLightbox::gallery($data);
+     *     $gallery->config(['share' => true])->start();
+     *     // later …
+     *     ImageLightbox::gallery()->update($data);
+     *
+     * @param  iterable<array-key, mixed>|null  $items
+     */
+    public function gallery(?iterable $items = null): Gallery
+    {
+        if ($this->gallery === null) {
+            return $this->gallery = new Gallery($items ?? []);
+        }
+
+        if ($items !== null) {
+            $this->gallery->setItems($items);
+        }
+
+        return $this->gallery;
     }
 }

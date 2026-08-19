@@ -23,17 +23,31 @@ describe('Plugin Manifest', function () {
         expect($names)->toContain('ImageLightbox.Show');
     });
 
+    it('declares the gallery bridge functions', function () {
+        $manifest = json_decode(file_get_contents($this->manifestPath), true);
+        $names    = array_column($manifest['bridge_functions'], 'name');
+        expect($names)->toContain('ImageLightbox.Gallery')
+            ->toContain('ImageLightbox.UpdateGallery')
+            ->toContain('ImageLightbox.Close');
+    });
+
+    it('declares the viewpager2 dependency the Android gallery needs', function () {
+        $manifest = json_decode(file_get_contents($this->manifestPath), true);
+        $deps     = $manifest['android']['dependencies']['implementation'] ?? [];
+        expect(implode(' ', $deps))->toContain('androidx.viewpager2:viewpager2');
+    });
+
     it('has android and ios targets on every bridge function', function () {
         $manifest = json_decode(file_get_contents($this->manifestPath), true);
         foreach ($manifest['bridge_functions'] as $fn) {
-            expect($fn)->toHaveAnyKeys(['android', 'ios']);
+            expect(isset($fn['android']) || isset($fn['ios']))->toBeTrue();
         }
     });
 
     it('registers the EditPressed and MarkupPressed events', function () {
         $manifest = json_decode(file_get_contents($this->manifestPath), true);
-        expect($manifest['events'])->toContain('Nativephp\\ImageLightbox\\Events\\EditPressed');
-        expect($manifest['events'])->toContain('Nativephp\\ImageLightbox\\Events\\MarkupPressed');
+        expect($manifest['events'])->toContain('Pteal79\\ImageLightbox\\Events\\EditPressed');
+        expect($manifest['events'])->toContain('Pteal79\\ImageLightbox\\Events\\MarkupPressed');
     });
 });
 
@@ -54,6 +68,44 @@ describe('Native Code', function () {
     it('Swift file contains the Show bridge function class', function () {
         $contents = file_get_contents($this->pluginPath.'/resources/ios/ImageLightboxFunctions.swift');
         expect($contents)->toContain('class Show');
+    });
+
+    it('Kotlin file contains the gallery bridge function classes', function () {
+        $contents = file_get_contents($this->pluginPath.'/resources/android/ImageLightboxFunctions.kt');
+        expect($contents)->toContain('class Gallery')
+            ->toContain('class UpdateGallery')
+            ->toContain('class Close');
+    });
+
+    it('Swift file contains the gallery bridge function classes', function () {
+        $contents = file_get_contents($this->pluginPath.'/resources/ios/ImageLightboxFunctions.swift');
+        expect($contents)->toContain('class Gallery')
+            ->toContain('class UpdateGallery')
+            ->toContain('class Close');
+    });
+
+    // Native sources escape their backslashes, so match on the namespace root
+    // rather than the fully-qualified string.
+    it('native files dispatch events under the package namespace', function () {
+        foreach (['android/ImageLightboxFunctions.kt', 'ios/ImageLightboxFunctions.swift'] as $file) {
+            $contents = file_get_contents($this->pluginPath.'/resources/'.$file);
+            expect($contents)->toContain('Pteal79')->not->toContain('Nativephp');
+        }
+    });
+
+    it('native files honour the title caption flag', function () {
+        foreach (['android/ImageLightboxFunctions.kt', 'ios/ImageLightboxFunctions.swift'] as $file) {
+            $contents = file_get_contents($this->pluginPath.'/resources/'.$file);
+            expect($contents)->toContain('title');
+        }
+    });
+
+    it('native files implement swipe-down-to-dismiss', function () {
+        $kotlin = file_get_contents($this->pluginPath.'/resources/android/ImageLightboxFunctions.kt');
+        expect($kotlin)->toContain('onDismissDrag')->toContain('dismissThreshold');
+
+        $swift = file_get_contents($this->pluginPath.'/resources/ios/ImageLightboxFunctions.swift');
+        expect($swift)->toContain('handleDismissPan')->toContain('dismissThreshold');
     });
 
     it('Kotlin file dispatches EditPressed event', function () {
@@ -92,6 +144,10 @@ describe('PHP Classes', function () {
         $contents = file_get_contents($this->pluginPath.'/src/ImageLightbox.php');
         expect($contents)->toContain('public function show(');
     });
+
+    it('has the Gallery class', function () {
+        expect(file_exists($this->pluginPath.'/src/Gallery.php'))->toBeTrue();
+    });
 });
 
 describe('Composer Configuration', function () {
@@ -106,6 +162,6 @@ describe('Composer Configuration', function () {
     it('registers the service provider via extra.laravel.providers', function () {
         $composer   = json_decode(file_get_contents($this->pluginPath.'/composer.json'), true);
         $providers  = $composer['extra']['laravel']['providers'] ?? [];
-        expect($providers)->toContain('Nativephp\\ImageLightbox\\ImageLightboxServiceProvider');
+        expect($providers)->toContain('Pteal79\\ImageLightbox\\ImageLightboxServiceProvider');
     });
 });

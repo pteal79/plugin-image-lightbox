@@ -7,6 +7,24 @@
             "android": "com.nativephp.plugins.imagelightbox.ImageLightboxFunctions.Show",
             "ios": "ImageLightboxFunctions.Show",
             "description": "Display an image in a full-screen native lightbox overlay"
+        },
+        {
+            "name": "ImageLightbox.Gallery",
+            "android": "com.nativephp.plugins.imagelightbox.ImageLightboxFunctions.Gallery",
+            "ios": "ImageLightboxFunctions.Gallery",
+            "description": "Display a swipeable gallery of images in a full-screen native lightbox overlay"
+        },
+        {
+            "name": "ImageLightbox.UpdateGallery",
+            "android": "com.nativephp.plugins.imagelightbox.ImageLightboxFunctions.UpdateGallery",
+            "ios": "ImageLightboxFunctions.UpdateGallery",
+            "description": "Replace the dataset of the currently open gallery lightbox"
+        },
+        {
+            "name": "ImageLightbox.Close",
+            "android": "com.nativephp.plugins.imagelightbox.ImageLightboxFunctions.Close",
+            "ios": "ImageLightboxFunctions.Close",
+            "description": "Dismiss the currently open lightbox"
         }
     ],
 
@@ -15,7 +33,9 @@
             "android.permission.INTERNET"
         ],
         "dependencies": {
-            "implementation": []
+            "implementation": [
+                "androidx.viewpager2:viewpager2:1.1.0"
+            ]
         },
         "activities": [],
         "services": [],
