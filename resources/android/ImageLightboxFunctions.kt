@@ -1023,17 +1023,65 @@ class ImageLightboxFragment : DialogFragment() {
     }
 
     private fun shareFile(file: File) {
-        val uri = FileProvider.getUriForFile(
-            requireContext(),
-            "${requireContext().packageName}.fileprovider",
-            file
-        )
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "image/*"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        val context = requireContext().applicationContext
+
+        // The copy can be several MB, so it is made off the main thread.
+        Thread {
+            val shareable = try {
+                shareableFile(context, file)
+            } catch (e: Exception) {
+                null
+            }
+
+            Handler(Looper.getMainLooper()).post {
+                if (!isAdded) return@post
+
+                val uri = shareable?.let {
+                    try {
+                        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", it)
+                    } catch (e: IllegalArgumentException) {
+                        null
+                    }
+                }
+
+                if (uri == null) {
+                    Toast.makeText(requireContext(), "Failed to prepare image for sharing.", Toast.LENGTH_SHORT).show()
+                    return@post
+                }
+
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "image/*"
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(Intent.createChooser(intent, "Share Image"))
+            }
+        }.start()
+    }
+
+    /**
+     * The file, or a copy of it, somewhere the FileProvider can serve.
+     *
+     * The NativePHP shell declares only `<cache-path>`, so a local image kept
+     * anywhere else — the app's own storage, where MobileFileCache keeps its
+     * copies — made getUriForFile throw and took the app down. A remote image
+     * is already downloaded into the cache directory and is shared as it is.
+     */
+    private fun shareableFile(context: Context, file: File): File {
+        val cacheDir = context.cacheDir.canonicalFile
+
+        if (file.canonicalPath.startsWith(cacheDir.path + File.separator)) {
+            return file
         }
-        startActivity(Intent.createChooser(intent, "Share Image"))
+
+        val shareDir = File(cacheDir, "lightbox_share").apply { mkdirs() }
+        val copy = File(shareDir, file.name)
+
+        if (!copy.exists() || copy.length() != file.length()) {
+            file.copyTo(copy, overwrite = true)
+        }
+
+        return copy
     }
 
     // -----------------------------------------------------------------------
